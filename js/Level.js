@@ -160,6 +160,11 @@
 
     Level.prototype.setupCharacters = function () {
 
+        var newCharacter = new Tykoon.Character(this, Tykoon.Utils.generateGuid());
+        newCharacter.obj.position.set(0, 0, 0);
+        this.addCharacter(newCharacter);
+        this.scene.add(newCharacter.obj);
+
         ////newCreature1.target=newCreature2.obj.position;
         ////newCreature2.target=newCreature1.obj.position;
         this.cameraObjectTracker=new THREE.Object3D();

@@ -13,15 +13,14 @@ Tykoon.Game.prototype.init=function(){
     var that=this;
 
     //TODO preperation for level loading
-    //this.loadObjects(function(){
-    //    that.setupMaterials();
-    //    that.currentLevel = new Tykoon.Level(that);
-    //    that.dispatchEvent({type: "afterInit"});
-    //
-    //    that.creatureComposerPanel=new Tykoon.CreatureComposerPanel(that);
-    //});
+    this.loadObjects(function(){
+        that.setupMaterials();
+        that.currentLevel = new Tykoon.Level(that);
+        that.dispatchEvent({type: "afterInit"});
 
-    that.currentLevel = new Tykoon.Level(that);
+        that.currentLevel = new Tykoon.Level(that);
+    });
+
 
 
     //TODO preperation for stats
@@ -39,34 +38,10 @@ Tykoon.Game.prototype.loadObjects=function(callback){
 
 
     var assetList=[
-        ['shader','waterVertexShader','assets/shaders/waterVS.glsl'],
-        ['json','quadHeavy','assets/models/quad_heavy.json'],
-        ['json','4leg_f','assets/models/4leg_f.json'],
-        ['json','4leg_b','assets/models/4leg_b.json'],
-        ['json','6legs','assets/models/6legs.json'],
-        ['json','body','assets/models/body.json'],
-        ['json','6leg','assets/models/6leg.json'],
-        ['json','head1','assets/models/head1.json'],
-        ['json','tail1','assets/models/tail1.json'],
-        ['json','tree','assets/models/tree.json'],
-        ['json','trunk','assets/models/trunk.json'],
-        ['json','root2','assets/models/root2.json'],
-        ['json','static','assets/models/static.json'],
-        ['image','greenMap','assets/terrain2_129.png'],
-        ['image','mesaMap','assets/mesa.png'],
-        ['image','iceMap','assets/ice.png'],
-        ['texture','frog1','assets/texture/frog1.jpg',true],
-        ['texture','heart','assets/particles/heart.png'],
-        ['texture','poison','assets/particles/poison.png'],
-        ['template','creatureInfoHex','assets/templates/creatureInfoHex.html'],
-        ['template','mainUi','assets/templates/mainUi.html'],
-        ['template','creatureTooltip','assets/templates/creatureTooltip.html']
-
+        ['json','tykoonCharacter','assets/models/tykoonCharacter.json']
     ];
 
-    var colladaLoader = this.colladaLoader = new THREE.ColladaLoader();
     var jsonLoader = this.jsonLoader = new THREE.JSONLoader();
-    colladaLoader.options.convertUpAxis = true;
 
     var loaderPromises=[];
 
