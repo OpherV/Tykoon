@@ -1,0 +1,17 @@
+/* line 4, ../sass/screen.scss */
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+}
+
+/* line 9, ../sass/screen.scss */
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* line 12, ../sass/screen.scss */
+#stats {
+  display: none;
+}
