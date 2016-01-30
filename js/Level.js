@@ -189,9 +189,12 @@
     };
 
     Level.prototype.setupEvents = function(){
+        var that = this;
+
         this.addEventListener("ui.clickOnTerrain", function (ev) {
             this.selectedCharacter.target = ev.terrainPoint;
             this.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
+            this.selectedCharacter.behavior = Tykoon.Character.BEHAVIORS.gototarget;
         });
     };
 

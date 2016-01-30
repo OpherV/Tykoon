@@ -215,7 +215,15 @@
     };
 
     Character.prototype.runStep = function (timestamp, lastTimestamp) {
-        if (this.behavior==Character.BEHAVIORS.normal) {
+        if (this.behavior == Character.BEHAVIORS.gototarget){
+            if (this.obj.position.distanceTo(this.target) < 30){
+                this.behavior = Character.BEHAVIORS.normal;
+                this.steeringType = Tykoon.Steering.STEERINGTYPES.idle;
+            }
+
+            this.steer();
+        }
+        else if (this.behavior==Character.BEHAVIORS.normal) {
             this.steer();
         }
         this.updateGridPosition();
