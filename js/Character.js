@@ -15,8 +15,7 @@
 
     Character.BEHAVIORS = {
         normal: "normal",
-        eating: "eating",
-        estrus: "estrus"
+        gototarget: "gototarget"
     };
 
 
@@ -37,14 +36,15 @@
             maxEnergy: 100,
             maxLife: 100,
             size: 1,
-            speed: 0,
-            rotateSpeed: 0,
+            speed: 2,
+            rotateSpeed: 0.1,
             colorHSLA: [0, 69, 55, 1]
         };
 
 
         this.stats = extend.call({}, defaultStats);
         this.modifiedStats = extend.call({}, this.stats);
+        this.velocity = new THREE.Vector2(1, 0).setLength(this.modifiedStats.speed);
 
         //3d representation
         this.obj = new THREE.Object3D();
@@ -191,20 +191,24 @@
             color: 0x999999,
             //emissive: 0xF4FF1C,
             //side: THREE.DoubleSide,
-            shading: THREE.FlatShading
+            //map: this.level.game.assetCache["tykoonUV"]
+            //shading: THREE.FlatShading
         } );
         //var creatureObj = this.creatureObj = new THREE.Mesh(geometry, material);
         //creatureObj.scale.set(0.1,0.1,0.1);
 
         var creatureObj = this.creatureObj = new THREE.BlendCharacter();
         var model = this.level.game.assetCache["tykoonCharacter"];
+        model.materials[0] = material;
         creatureObj.load(model);
         creatureObj.play("animation");
         //creatureObj.animations["animation"].timeScale = 100;
         creatureObj.mixer.timeScale = 3;
+        this.creatureObj.scale.set(0.2,0.2,0.2);
+        this.creatureObj.rotation.y = -Math.PI/2;
 
 
-        creatureObj.position.y+=20;
+        creatureObj.position.y+=40;
         //creatureObj.castShadow = true;
         //geometry.computeFaceNormals();
         that.obj.add(creatureObj);
@@ -287,11 +291,11 @@
 
         //add steering and clamp values
         this.steering.finalize();
-        this.steering.avoidBounds();
+        //this.steering.avoidBounds();
         //if (!this.traits.Hexapod) {
         //    this.steering.avoidSteep();
         //}
-
+        //console.log(this.steering.finalVelocity);
         this.obj.position.add(this.steering.finalVelocity);
         var targetRotation = Math.PI * 2 - Math.atan2(this.steering.velocity.y, this.steering.velocity.x);
         if (Math.abs(targetRotation - this.obj.rotation.y) > 0.05) {

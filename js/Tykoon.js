@@ -17,8 +17,6 @@ Tykoon.Game.prototype.init=function(){
         that.setupMaterials();
         that.currentLevel = new Tykoon.Level(that);
         that.dispatchEvent({type: "afterInit"});
-
-        that.currentLevel = new Tykoon.Level(that);
     });
 
 
@@ -38,10 +36,16 @@ Tykoon.Game.prototype.loadObjects=function(callback){
 
 
     var assetList=[
-        ['json','tykoonCharacter','assets/models/tykoonCharacter.json']
+        ['json','tykoonCharacter','assets/models/tykoonCharacter.json'],
+        ['texture','tykoonUV','assets/uv/tykoonUV.jpg'],
+        ['texture','islandUV','assets/uv/islandUV.jpg'],
+        ['obj','islandModel','assets/models/island.obj']
     ];
 
+    var manager = new THREE.LoadingManager();
     var jsonLoader = this.jsonLoader = new THREE.JSONLoader();
+    var objLoader = new THREE.OBJLoader( manager );
+
 
     var loaderPromises=[];
 
@@ -105,6 +109,14 @@ Tykoon.Game.prototype.loadObjects=function(callback){
                     };
                     img.src = asset[2];
                     loaderPromises.push(imageDeferred);
+                    break;
+                case "obj":
+                    var imageDeferred = new $.Deferred();
+                    objLoader.load(asset[2], function ( object ) {
+                        that.assetCache[asset[1]]=object;
+                        loaderPromises.push(imageDeferred);
+
+                    }, function(){}, function(){} );
                     break;
             }
         })()

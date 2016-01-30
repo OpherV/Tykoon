@@ -17,9 +17,7 @@
 
     UiController.MODES = {
         IDLE: "idle",
-        PLACEFOOD: "add food",
-        PLACECREATURE: "place creature",
-        PLACEPORTAL: "place portal"
+        SELECTCHARACTER: "select character"
     };
 
     UiController.prototype.init = function () {
@@ -109,7 +107,6 @@
         document.addEventListener('keyup', function (event) {
             that.keysDown[event.keyCode] = false;
         });
-
         document.addEventListener('mousedown', function (ev) {
             that.mousePosRel.down = true;
             //var terrainPos=that.level.terrain.getPosition(that.terrainPoint.x,that.terrainPoint.z);
@@ -120,12 +117,19 @@
             //    terrainPos.triangleCenter.x,
             //    -2000,
             //    terrainPos.triangleCenter.z,null,true);
-
-            if (ev.which == 1 && that.terrainPoint) {
-                level.dispatchEvent({
-                    type: "ui.clickOnTerrain",
-                    terrainPoint: that.terrainPoint
-                });
+            if (ev.which == 1) {
+                if (that.characterOnHover){
+                    level.dispatchEvent({
+                        type: "ui.clickOnCharacter",
+                        terrainPoint: that.characterOnHover
+                    });
+                }
+                else if (that.terrainPoint) {
+                    level.dispatchEvent({
+                        type: "ui.clickOnTerrain",
+                        terrainPoint: that.terrainPoint
+                    });
+                }
             }
         });
 
@@ -156,9 +160,9 @@
                 that.raycaster.setFromCamera(that.mousePosRel, level.currentCamera);
             }
 
-            if (level.terrain && level.terrain.terrainMesh) {
+            if (level.island) {
                 // See if the ray from the camera into the world hits one of our meshes
-                var intersects = that.raycaster.intersectObject(level.terrain.terrainMesh);
+                var intersects = that.raycaster.intersectObjects(level.island.children);
                 // Toggle rotation bool for meshes that we clicked
                 that.terrainPoint = intersects.length > 0 ? intersects[0].point : null;
             }
@@ -174,7 +178,7 @@
                     obj = obj.parent
                 }
 
-                if (that.characterOnHover != obj.character && !obj.character.stats.isFood){
+                if (that.characterOnHover != obj.character){
                     that.characterOnHover = obj.character;
                     that.showCreatureTooltip(that.characterOnHover);
                 }
@@ -203,15 +207,7 @@
     UiController.prototype.update = function () {
         if (this.characterOnHover) {
             var c=this.characterOnHover;
-            var energyPercent=Math.round(this.characterOnHover.modifiedStats.energy/this.characterOnHover.modifiedStats.maxEnergy*100);
-            this.creatureToolTip.querySelector(".energyBar .bar").style.width = "{0}%".format(energyPercent);
-            this.creatureToolTip.querySelector(".energyBar .value").innerText=Math.round(this.characterOnHover.modifiedStats.energy);
-            this.creatureToolTip.querySelector(".energyBar .total").innerText=Math.round(this.characterOnHover.modifiedStats.maxEnergy);
 
-            var lifePercent=Math.round(this.characterOnHover.modifiedStats.life/this.characterOnHover.modifiedStats.maxLife*100);
-            this.creatureToolTip.querySelector(".lifeBar .bar").style.width = "{0}%".format(lifePercent);
-            this.creatureToolTip.querySelector(".lifeBar .value").innerText=Math.round(this.characterOnHover.modifiedStats.life);
-            this.creatureToolTip.querySelector(".lifeBar .total").innerText=Math.round(this.characterOnHover.modifiedStats.maxLife);
 
             //if (c.currentEstrusCycleStartTime!==null && c.currentEstrusCycleStartTime!==undefined){
             //    var estrusPercent=Math.round( (this.level.timer.currentTime - c.currentEstrusCycleStartTime) % c.modifiedStats.estrusCycleLength / c.modifiedStats.estrusCycleLength * 100);
@@ -230,83 +226,14 @@
         }
     };
 
-    UiController.prototype.startPortalTimer= function () {
-        this.getPathByPercent=function(a,options) {
-            var op={
-                radius: 100,
-                centerX: 0,
-                centerY: 0,
-                toEmpty: false
-            }
-            for(var prop in options){
-                op[prop]=options[prop];
-            }
 
-            var pi = Math.PI;
-            var r,x,y,mid,anim;
-            a %= 360;
-            r = ( a * pi / 180 );
-            x =  op.centerX + Math.sin( r ) * op.radius;
-            y = op.centerY +  Math.cos( r ) * - op.radius;
-            anim = 'M ' +op.centerX +' '+op.centerY
-              + ' v '+-op.radius
-              + ' A '+op.radius+' '+op.radius
-              + ' 1 ' ;
-            if (op.toEmpty){
-                mid = ( a < 180 ) ? 1 : 0;
-                anim = anim + mid + ' 0 '
-                  +  x  + ' '
-                  +  y  + ' z';
-            }
-            else{
-                mid = ( a > 180 ) ? 1 : 0;
-                anim = anim + mid + ' 1 '
-                  +  x  + ' '
-                  +  y  + ' z';
-            }
-            return anim
-        }
-
-        var timerPath=document.querySelector(".timer");
-        var timerPercent=100;
-        this.timerOptions={
-            width: 15,
-            centerX: 42,
-            centerY: 98,
-            toEmpty: true,
-            radius: 50
-
-        };
-
-        TweenMax.to(this.portalButton.querySelector("image"),0.3,{
-            opacity: 0.2,
-            ease: Power2.easeOut
-        });
-        var that=this;
-        this.portalInterval=setInterval(function(){
-              timerPercent=timerPercent>=100?0:timerPercent+1;
-              timerPath.setAttribute('d',that.getPathByPercent(timerPercent/100*360,that.timerOptions));
-          },
-          100)
-    };
-
-
-    UiController.prototype.stopPortalTimer= function () {
-        TweenMax.to(this.portalButton.querySelector("image"),0.3,{
-            opacity: 1,
-            ease: Power2.easeOut
-        });
-        document.querySelector(".timer").setAttribute('d',this.getPathByPercent(0,this.timerOptions));
-        clearInterval(this.portalInterval);
-    };
-
-        UiController.prototype.showCreatureTooltip = function (character) {
+    UiController.prototype.showCreatureTooltip = function (character) {
         showElement(this.creatureToolTip);
     };
 
     UiController.prototype.updateCreatureTooltip = function () {
-        this.creatureToolTip.style.left=this.mousePosAbs.x;
-        this.creatureToolTip.style.top=this.mousePosAbs.y;
+        //this.creatureToolTip.style.left=this.mousePosAbs.x;
+        //this.creatureToolTip.style.top=this.mousePosAbs.y;
     };
 
     UiController.prototype.hideCreatureTooltip = function () {
@@ -316,10 +243,10 @@
     Tykoon.UiController = UiController;
 
     function showElement(el) {
-        el.style.opacity = 1;
+        //el.style.opacity = 1;
     }
 
     function hideElement(el) {
-        el.style.opacity = 0;
+        //el.style.opacity = 0;
     }
 })();

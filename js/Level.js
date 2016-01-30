@@ -14,8 +14,6 @@
         this.postProcessingEnabled = !urlVars.postprocessing=="false";
         this.dimensions = 25000;
         this.positionGridSize = 1000;
-        this.maxCharacters = 300;
-        this.portalLifeTime = 10 * 60;
 
         if (urlVars.showfps){
             document.getElementById("stats").style.display="block";
@@ -30,17 +28,16 @@
         this.numTiles = Math.round(this.dimensions / this.positionGridSize);
         this.positionGrid = {};
         this.characters = {};
-        this.portals = {};
         this.characterArray = []; //this gets updated whenever a character is added or deleted
         this.proximityTests = {};
+        this.lastTimestamp = 0;
+        this.scene = new THREE.Scene();
 
         this.isPaused = false;
-
-        this.lastTimestamp = 0;
-
+        this.selectedCharacter = null;
 
 
-        this.scene = new THREE.Scene();
+
         this.cameras = [];
         this.orbitCamera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 100, this.dimensions * 5);
         this.orbitCamera.position.set(2600, 3000, 2600);
@@ -66,57 +63,74 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
 
-        var geometry = new THREE.IcosahedronGeometry(100, 0);
-
-        var thingMaterial = new THREE.MeshLambertMaterial({
-            ambient: 0x999999,
-            color: 0x777777,
-            emissive: 0x685b6e,
-            vertexColors: THREE.FaceColors,
-            shading: THREE.FlatShading
-        });
-
-        //var thing = this.thing = new THREE.Object3D();
-        //var tetra = new THREE.Mesh(geometry, thingMaterial);
-        //tetra.scale.multiplyScalar(100);
-        ////tetra.castShadow=true;
-        //thing.add(tetra);
-        //thing.position.y = 20000;
-
-
         var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
         hemiLight.color.setHSL(0.6, 1, 0.6);
         hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.set(0, 1, 0);
         this.scene.add(hemiLight);
 
-        var dirLight = this.dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-        dirLight.color.setHSL(0.1, 1, 0.95);
-        dirLight.position.set(-10000, 4000, 10000);
-        dirLight.target = new THREE.Object3D(0, 0, 0);
-        dirLight.castShadow = true;
-        //dirLight.shadowCameraVisible=true;
-        dirLight.shadowCameraLeft = -this.dimensions / 2;
-        dirLight.shadowCameraRight = this.dimensions / 2;
-        dirLight.shadowCameraTop = this.dimensions / 2;
-        dirLight.shadowCameraBottom = -this.dimensions / 2;
-        dirLight.shadowCameraNear = -this.dimensions / 2;
-        dirLight.shadowCameraFar = this.dimensions;
-        dirLight.shadowMapWidth = dirLight.shadowMapHeight = 2048;
-        dirLight.castShadow = true;
-        this.scene.add(dirLight);
+        //var dirLight = this.dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        //dirLight.color.setHSL(0.1, 1, 0.95);
+        //dirLight.position.set(-10000, 4000, 10000);
+        //dirLight.target = new THREE.Object3D(0, 0, 0);
+        //dirLight.castShadow = true;
+        ////dirLight.shadowCameraVisible=true;
+        //dirLight.shadowCameraLeft = -this.dimensions / 2;
+        //dirLight.shadowCameraRight = this.dimensions / 2;
+        //dirLight.shadowCameraTop = this.dimensions / 2;
+        //dirLight.shadowCameraBottom = -this.dimensions / 2;
+        //dirLight.shadowCameraNear = -this.dimensions / 2;
+        //dirLight.shadowCameraFar = this.dimensions;
+        //dirLight.shadowMapWidth = dirLight.shadowMapHeight = 2048;
+        //dirLight.castShadow = true;
+        //this.scene.add(dirLight);
 
-        var sphere = new THREE.SphereGeometry(10, 16, 8);
 
-        //this.scene.add(thing);
 
         //terrain
-        var geometry = new THREE.PlaneGeometry( 1000, 1000, 1 );
-        var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-        var plane = new THREE.Mesh( geometry, material );
-        plane.rotation.x = Math.PI/2;
+        //var geometry = new THREE.PlaneGeometry( 1000, 1000, 1 );
+        //var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+        //
+        //var plane = new THREE.Mesh( geometry, material );
+        //plane.rotation.x = Math.PI/2;
+        //this.scene.add(plane);
 
-        this.scene.add(plane);
+        var island = this.island = this.game.assetCache["islandModel"].clone();
+
+        var material = new THREE.MeshPhongMaterial( {
+            map: this.game.assetCache["islandUV"]
+            } );
+
+        this.scene.add(island);
+        island.traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {
+                var geometry = child.geometry;
+
+                geometry.computeFaceNormals();
+                geometry.computeVertexNormals();
+                child.material = material;
+                console.log(material);
+            }
+        } );
+
+
+        var pointLight11 = new THREE.PointLight(0xffffff);
+        pointLight11.position.set(0, 300, 200);
+
+        this.scene.add(pointLight11);
+
+
+        var hex  = 0xff0000;
+
+
+        //var bbox = new THREE.BoundingBoxHelper( island, hex );
+        //bbox.update();
+        //this.scene.add( bbox );
+
+        var particleLight = this.particleLight = new THREE.Mesh( new THREE.SphereGeometry( 4, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
+        this.scene.add( particleLight );
+        var pointLight = new THREE.PointLight( 0xffffff, 1);
+        particleLight.add( pointLight );
 
         //skybox
 
@@ -151,7 +165,7 @@
         this.uiController = new Tykoon.UiController(this);
 
         this.setupCharacters();
-
+        this.setupEvents();
 
         this.runStep(0);
 
@@ -160,7 +174,7 @@
 
     Level.prototype.setupCharacters = function () {
 
-        var newCharacter = new Tykoon.Character(this, Tykoon.Utils.generateGuid());
+        var newCharacter = this.selectedCharacter = new Tykoon.Character(this, Tykoon.Utils.generateGuid());
         newCharacter.obj.position.set(0, 0, 0);
         this.addCharacter(newCharacter);
         this.scene.add(newCharacter.obj);
@@ -172,6 +186,13 @@
 
         //this.cameraObjectTracker.add(this.currentCamera);
 
+    };
+
+    Level.prototype.setupEvents = function(){
+        this.addEventListener("ui.clickOnTerrain", function (ev) {
+            this.selectedCharacter.target = ev.terrainPoint;
+            this.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
+        });
     };
 
 
@@ -203,6 +224,12 @@
         });
 
         this.runProximityTests();
+
+        var timer = 0.0001 * Date.now();
+
+        this.particleLight.position.x = Math.sin( timer * 7 ) * 700;
+        this.particleLight.position.y = Math.cos( timer * 5 ) * 800;
+        this.particleLight.position.z = Math.cos( timer * 3 ) * 900;
 
         this.dispatchEvent({type: "render"});
 
@@ -546,17 +573,6 @@
         );
     };
 
-    Level.prototype.startPlaceCreature=function(dna){
-        this.placedCreature = Tykoon.CreatureComposer.compose(dna);
-        //this.placedCreature.skinMaterial.transparent=true;
-        //this.placedCreature.skinMaterial.opacity=0.5;
-        //this.placedCreature.skinMaterial.color=0xFFE341;
-        //this.placedCreature.skinMaterial.emissive=0x44B8ED;
-        window.blah=this.placedCreature.skinMaterial;
-
-        this.scene.add(this.placedCreature);
-        this.uiController.mode=Tykoon.UiController.MODES.PLACECREATURE;
-    };
 
 
     Level.prototype.drawDebugHelpers = function () {
@@ -617,107 +633,12 @@
     };
 
 
-    //todo rename these two functions properly
-    Level.prototype.addCharacterByDna = function(position,creatureParams){
-        //create food on click
-        var newCharacter = new Tykoon.Character(this, Tykoon.Utils.generateGuid(), creatureParams);
-        newCharacter.obj.position.copy(position);
-        this.addCharacter(newCharacter);
-        this.scene.add(newCharacter.obj);
-
-        return newCharacter;
-    };
 
     Level.prototype.addCharacter = function (char) {
         this.characters[char.id]=char;
         updateCharacterArray.call(this);
     };
 
-    Level.prototype.sendCharacter = function(character,remoteWorldKey){
-        character.inTransit=true;
-        var parcel=character.serialize();
-        this.game.gameServer.sendCharacter(parcel,remoteWorldKey);
-        character.creatureObj.skinMaterial.transparent=true;
-        TweenMax.fromTo(character.creatureObj.skinMaterial, 1, {opacity:1},
-            {opacity: 0,
-            ease: Elastic.easeOut.config(1, 1),
-            onComplete: function(){
-                character.die();
-            }
-            });
-    };
-
-    Level.prototype.openPortal = function(position,remoteWorldKey){
-        if (!this.portals[remoteWorldKey] && (this.canOpenPortal==undefined || this.canOpenPortal)) {
-            this.canOpenPortal=false;
-            var portal = new Tykoon.Portal(this, remoteWorldKey);
-            this.portals[remoteWorldKey] = portal;
-
-            portal.obj.position.copy(position);
-            var lookPos = this.currentCamera.position.clone().sub(portal.obj.position);
-            lookPos.y = portal.obj.position.y;
-            portal.obj.lookAt(lookPos);
-            portal.obj.position.y += 355;
-            this.scene.add(portal.obj);
-            TweenMax.fromTo(portal.obj.scale, 1, {x: 0.1, y:0.1, z:0.1}, {x: 2, y:2, z:2, ease: Power2.easeOut});
-
-            this.timer.add(this.portalLifeTime,this.closePortal,this,[remoteWorldKey,portal]);
-            this.uiController.startPortalTimer();
-
-            return portal;
-        }
-    };
-
-    Level.prototype.closePortal= function(remoteWorldKey,portal){
-        var that=this;
-        this.canOpenPortal=true;
-        delete this.portals[remoteWorldKey];
-        TweenMax.to(portal.obj.scale, 1, {
-            x: 0.1,
-            y:0.1,
-            z:0.1,
-            ease: Elastic.easeOut.config(1, 1),
-            onComplete: function(){ //todo inefficient
-                that.scene.remove(portal.obj);
-            }
-        });
-        this.uiController.stopPortalTimer();
-    };
-
-
-
-    //private functions
-
-    function handleServerMessage(serverMessage){
-        if (serverMessage.type=="creature"){
-            var portal=this.portals[serverMessage.sourceWorldKey];
-            if (portal){
-                var newPosition=portal.obj.position.clone();
-                newPosition.x+=1000;
-                var newCharacter=this.addCharacterByDna(newPosition,serverMessage.parcel.dna);
-
-                newCharacter.creatureObj.skinMaterial.transparent=true;
-                TweenMax.fromTo(newCharacter.creatureObj.skinMaterial, 2,
-                    {opacity:0},
-                    {opacity: 1,
-                        ease: Elastic.easeOut.config(1, 1),
-                        onComplete: function(){
-                            newCharacter.creatureObj.skinMaterial.transparent=false; //todo is this always false?
-                        }
-                    });
-                //todo set can't touch portal
-            }
-        }
-        else if(serverMessage.type=="openPortal"){
-            var randomArea=this.dimensions*0.6;
-            var randomPosition=new THREE.Vector3(
-                Math.random() * randomArea - randomArea / 2,
-                0,
-                Math.random() * randomArea - randomArea / 2);
-            randomPosition.y=this.terrain.obj.position.y+this.terrain.getPosition(randomPosition.x,randomPosition.z).height;
-            this.openPortal(randomPosition,serverMessage.sourceWorldKey);
-        }
-    }
 
     function updateCharacterArray(){
         this.characterArray=[];
