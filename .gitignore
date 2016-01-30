@@ -4,3 +4,4 @@ bower_components
 *.wav
 *.wav
 *.asd
+node_modules
