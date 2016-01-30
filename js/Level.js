@@ -89,7 +89,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
 
-        var hemiLight = new THREE.HemisphereLight(0xc7f4c7, 0xffffff, 0.1);
+        var hemiLight = new THREE.HemisphereLight(0xa1742d, 0xffffff, 0.3);
         //hemiLight.color.setHSL(0.6, 1, 0.6);
         //hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.set(0, 1, 0);
