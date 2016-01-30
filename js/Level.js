@@ -234,16 +234,18 @@
         var that = this;
 
         this.addEventListener("ui.clickOnTerrain", function (ev) {
-            this.selectedCharacter.target = ev.terrainPoint;
-            // add click indication
-            this.targetLocationIndicator.position.x = ev.terrainPoint.x;
-            this.targetLocationIndicator.position.z = ev.terrainPoint.z;
-            this.targetLocationIndicator.visible = true;
-            setTimeout(function() {
-                this.targetLocationIndicator.visible = false;
-            }.bind(this), 2000);
-            this.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
-            this.selectedCharacter.behavior = Tykoon.Character.BEHAVIORS.gototarget;
+            if (this.selectedCharacter) {
+                this.selectedCharacter.target = ev.terrainPoint;
+                // add click indication
+                this.targetLocationIndicator.position.x = ev.terrainPoint.x;
+                this.targetLocationIndicator.position.z = ev.terrainPoint.z;
+                this.targetLocationIndicator.visible = true;
+                setTimeout(function () {
+                    this.targetLocationIndicator.visible = false;
+                }.bind(this), 2000);
+                this.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
+                this.selectedCharacter.behavior = Tykoon.Character.BEHAVIORS.gototarget;
+            }
         });
 
         this.addEventListener("ui.clickOnCharacter", function (ev) {
