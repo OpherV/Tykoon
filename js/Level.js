@@ -357,24 +357,28 @@
             var option1 = document.querySelector(".option1");
             var option2 = document.querySelector(".option2");
             var option3 = document.querySelector(".option3");
+            var charName = document.querySelector(".characterName");
             switch(ev.character.id){
                 case 0:
                     img.src="assets/images/tiePortrait.png";
                     option1.innerHTML = "Create Charity";
                     option2.innerHTML = "Monopolize";
                     option3.innerHTML = "Outsource";
+                    charName.innerHTML = "Ty Koon";
                     break;
                 case 1:
                     img.src="assets/images/robotPortrait.png";
                     option1.innerHTML = "Spin";
                     option2.innerHTML = "Kiss a Baby";
                     option3.innerHTML = "Campaign";
+                    charName.innerHTML = "Hank Underbot";
                     break;
                 case 2:
                     img.src="assets/images/catPortrait.png";
                     option1.innerHTML = "Like";
                     option2.innerHTML = "Selfie";
                     option3.innerHTML = "Angry Post";
+                    charName.innerHTML = "Ms. Anthrope";
                     break;
 
             }
