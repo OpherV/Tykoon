@@ -5,3 +5,4 @@ bower_components
 *.wav
 *.asd
 node_modules
+stylesheets
