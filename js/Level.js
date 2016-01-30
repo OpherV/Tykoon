@@ -37,7 +37,7 @@
 
         var that = this;
         var urlVars=Tykoon.Utils.getUrlVars();
-        this.postProcessingEnabled = !urlVars.postprocessing=="false";
+        this.postProcessingEnabled = true;
         this.dimensions = 25000;
         this.positionGridSize = 1000;
 
@@ -395,7 +395,7 @@
         var bluriness = 3;
 
         hblur.uniforms['h'].value = bluriness / window.innerWidth;
-        vblur.uniforms['v'].value = bluriness / window.innerHeight;
+        vblur.uniforms['v'].value = bluriness / window.innerHeight/4;
         hblur.uniforms['r'].value = vblur.uniforms['r'].value = 0.5;
 
         this.composer.addPass(hblur);
