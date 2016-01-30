@@ -128,23 +128,7 @@
         particleLight.add( pointLight );
 
         //skybox
-
-        var geometry = new THREE.SphereGeometry(this.dimensions * 2, 60, 40);
-        var uniforms = {
-            texture: {type: 't', value: THREE.ImageUtils.loadTexture('images/skybox.jpg')}
-        };
-
-        var material = new THREE.ShaderMaterial({
-            uniforms: uniforms,
-            vertexShader: document.getElementById('sky-vertex').textContent,
-            fragmentShader: document.getElementById('sky-fragment').textContent
-        });
-
-        var skyBox = this.skyBox = new THREE.Mesh(geometry, material);
-        skyBox.scale.set(-1, 1, 1);
-        skyBox.eulerOrder = 'XZY';
-        skyBox.renderDepth = 1000.0;
-        this.scene.add(skyBox);
+       this.setupSkybox();
 
 
         document.body.appendChild(renderer.domElement);
@@ -649,6 +633,39 @@
         updateCharacterArray.call(this);
     };
 
+
+    Level.prototype.setupSkybox = function(){
+        //var material = new THREE.ShaderMaterial({
+        //    uniforms: uniforms,
+        //    vertexShader: document.getElementById('sky-vertex').textContent,
+        //    fragmentShader: document.getElementById('sky-fragment').textContent
+        //});
+        //
+        //var skyBox = this.skyBox = new THREE.Mesh(geometry, material);
+        //skyBox.scale.set(-1, 1, 1);
+        //skyBox.eulerOrder = 'XZY';
+        //skyBox.renderDepth = 1000.0;
+        //this.scene.add(skyBox);
+        //
+        //var geometry = new THREE.SphereGeometry(this.dimensions * 2, 60, 40);
+        //var uniforms = {
+        //    texture: {type: 't', value: THREE.ImageUtils.loadTexture('images/skybox.jpg')}
+        //};
+        var imagePrefix = "assets/uv/";
+        var directions  = ["xpos", "xneg", "ypos", "yneg", "zneg", "zpos"];
+        var imageSuffix = ".jpg";
+        var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );
+
+        var materialArray = [];
+        for (var i = 0; i < 6; i++)
+            materialArray.push( new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix ),
+                side: THREE.BackSide
+            }));
+        var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+        var skyBox = this.skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+        this.scene.add( skyBox );
+    };
 
     function updateCharacterArray(){
         this.characterArray=[];
