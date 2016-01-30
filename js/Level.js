@@ -10,7 +10,7 @@
 
     Level.prototype.init = function () {
         // set up the sphere vars
-        var radius = 45,
+        var radius = 25,
             segments = 16,
             rings = 16;
 
@@ -188,7 +188,7 @@
         // Math.PI = 180 degrees, Math.PI / 2 = 90 degrees, etc.
         water.rotation.x = -Math.PI / 2;
 
-        this.scene.add(water);
+        //this.scene.add(water);
 
 
 
@@ -352,6 +352,32 @@
             this.selectedCharacter = ev.character;
             var sounds = Tykoon.sounds[ev.character.id];
             sounds[Math.floor(Math.random() * sounds.length)].play(); // random response
+
+            var img = document.querySelector(".portrait");
+            var option1 = document.querySelector(".option1");
+            var option2 = document.querySelector(".option2");
+            var option3 = document.querySelector(".option3");
+            switch(ev.character.id){
+                case 0:
+                    img.src="assets/images/tiePortrait.png";
+                    option1.innerHTML = "Create Charity";
+                    option2.innerHTML = "Monopolize";
+                    option3.innerHTML = "Outsource";
+                    break;
+                case 1:
+                    img.src="assets/images/robotPortrait.png";
+                    option1.innerHTML = "Spin";
+                    option2.innerHTML = "Kiss a Baby";
+                    option3.innerHTML = "Campaign";
+                    break;
+                case 2:
+                    img.src="assets/images/catPortrait.png";
+                    option1.innerHTML = "Like";
+                    option2.innerHTML = "Selfie";
+                    option3.innerHTML = "Angry Post";
+                    break;
+
+            }
         });
 
         this.addEventListener("ui.clickOnSite", function (ev) {
@@ -493,11 +519,11 @@
         //blur
         hblur = new THREE.ShaderPass(THREE.HorizontalTiltShiftShader);
         vblur = new THREE.ShaderPass(THREE.VerticalTiltShiftShader);
-        var bluriness = 3;
+        var bluriness = 1;
 
         hblur.uniforms['h'].value = bluriness / window.innerWidth;
-        vblur.uniforms['v'].value = bluriness / window.innerHeight/4;
-        hblur.uniforms['r'].value = vblur.uniforms['r'].value = 0.5;
+        vblur.uniforms['v'].value = bluriness / window.innerHeight;
+        hblur.uniforms['r'].value = vblur.uniforms['r'].value = 0.35;
 
         this.composer.addPass(hblur);
         this.composer.addPass(vblur);
