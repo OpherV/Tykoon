@@ -41,7 +41,8 @@ Tykoon.Game.prototype.loadObjects=function(callback){
         ['texture','islandUV','assets/uv/islandUV.jpg'],
         ['texture','underbotUV','assets/uv/HankUnderbot_TEx.jpg'],
         ['obj','islandModel','assets/models/island.obj'],
-        ['obj','underbotModel','assets/models/hank_NoAnim.obj']
+        ['obj','underbotModel','assets/models/hank_NoAnim.obj'],
+        ['obj','volcanoModel','assets/models/volcano.obj']
     ];
 
     var manager = new THREE.LoadingManager();

@@ -89,9 +89,9 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
 
 
-        var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
-        hemiLight.color.setHSL(0.6, 1, 0.6);
-        hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        var hemiLight = new THREE.HemisphereLight(0xc7f4c7, 0xffffff, 0.1);
+        //hemiLight.color.setHSL(0.6, 1, 0.6);
+        //hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.set(0, 1, 0);
         this.scene.add(hemiLight);
         this.scene.add(sphere);
@@ -110,6 +110,12 @@
         dirLight.shadowCameraFar = this.dimensions;
         dirLight.shadowMapWidth = dirLight.shadowMapHeight = 2048;
         dirLight.castShadow = true;
+        this.scene.add(dirLight);
+
+        var cameraLight = this.cameraLight = new THREE.SpotLight(0xc7f4c7, 0.6, 3000, Math.PI/4, 10, 1);
+        cameraLight.target = new THREE.Object3D(0, 0, 0);
+
+        this.scene.add(cameraLight);
         this.scene.add(dirLight);
 
 
@@ -198,6 +204,30 @@
 
         //this.cameraObjectTracker.add(this.currentCamera);
 
+
+        var volcano =  this.game.assetCache["volcanoModel"].clone();
+
+        var volcanoMaterial = new THREE.MeshPhongMaterial( {
+            color: 0x612704
+        } );
+
+        volcano.traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {
+                var geometry = child.geometry;
+
+                geometry.computeFaceNormals();
+                geometry.computeVertexNormals();
+                child.material = volcanoMaterial;
+                child.castShadow = true;
+            }
+        } );
+
+        volcano.scale.set(0.3, 0.3, 0.3);
+        volcano.position.set(300, 120, 300);
+        volcano.rotation.y = 0.3;
+
+        this.scene.add(volcano);
+
     };
 
     Level.prototype.setupEvents = function(){
@@ -260,6 +290,8 @@
         //this.particleLight.position.z = Math.cos( timer * 3 ) * 900;
 
         this.dispatchEvent({type: "render"});
+
+        this.cameraLight.position.copy(this.currentCamera.position);
 
         this.timer.tick();
         //this.game.stats.end();
