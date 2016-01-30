@@ -65,7 +65,7 @@
 
 
         this.cameras = [];
-        this.orbitCamera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 5, this.dimensions * 5);
+        this.orbitCamera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 5, this.dimensions * 2);
         this.orbitCamera.position.set(-1000, 500, -1000);
         this.cameras.push(this.orbitCamera);
         //this.cameras.push(new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 0.1, 5000 ));
@@ -420,7 +420,7 @@
 
         controls.target.set(0, 0, 0);
         controls.minDistance = 100;//1400;
-        controls.maxDistance = 70000;//10000;
+        controls.maxDistance = 3500;//10000;
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.4;
