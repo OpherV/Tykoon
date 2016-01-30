@@ -546,20 +546,6 @@
 
         }
 
-        //portal checking
-        //todo should be more robust instead of this check
-        for (var remoteWorldKey in this.portals){
-            for (var characterId in this.characters){
-                character=this.characters[characterId];
-                if (!character.stats.isFood && !character.inTransit) {
-                    var distanceToPortal = character.obj.position.distanceTo(this.portals[remoteWorldKey].obj.position);
-                    if (distanceToPortal < 500) {
-                        this.sendCharacter(character,remoteWorldKey)
-                    }
-                }
-            }
-        }
-
     };
 
 
