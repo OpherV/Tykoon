@@ -25,6 +25,9 @@ var sounds = {
 			'assets/sounds/kat/response5.mp3'
 		]
 	},
+	soundtrack: {
+		url: 'assets/sounds/soundtrack.mp3'
+	}
 };
 
 
@@ -67,6 +70,20 @@ soundManager.setup({
 		}
 
 		Tykoon.sounds[2] = responseArray;
+
+		var soundtrack = soundManager.createSound({
+		  	url: sounds.soundtrack.url
+		});
+
+		function loopSound(sound) {
+		  sound.play({
+		    onfinish: function() {
+		      loopSound(sound);
+		    }
+		  });
+		}
+
+		loopSound(soundtrack);
     },
 
     ontimeout: function() {
