@@ -66,7 +66,7 @@
 
         this.cameras = [];
         this.orbitCamera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 100, this.dimensions * 5);
-        this.orbitCamera.position.set(1000, 900, 1000);
+        this.orbitCamera.position.set(-1000, 500, -1000);
         this.cameras.push(this.orbitCamera);
         //this.cameras.push(new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 0.1, 5000 ));
         var topCamera = new THREE.OrthographicCamera(this.dimensions * window.innerWidth / window.innerHeight / -2,
