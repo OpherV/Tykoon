@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "soundmanager2": "^2.97.20150601-a"
   },
   "devDependencies": {
     "http-server": "^0.8.5"

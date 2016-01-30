@@ -201,6 +201,6 @@
 		}
 	};
 
-	window.Tykoon.GameLogic = exports;
+	window.Tykoon.Logic = exports;
 
 })();

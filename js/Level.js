@@ -186,13 +186,15 @@
 
     Level.prototype.setupCharacters = function () {
 
-        var tykoonCharacter = new Tykoon.TykoonCharacter(this, Tykoon.Utils.generateGuid());
+        var db = Tykoon.Logic.getCharacters();
+
+        var tykoonCharacter = new Tykoon.TykoonCharacter(this, 0);
         tykoonCharacter.obj.position.set(0, 0, 0);
         this.addCharacter(tykoonCharacter);
         this.scene.add(tykoonCharacter.obj);
 
 
-        var underbotCharacter = new Tykoon.UnderbotCharacter(this, Tykoon.Utils.generateGuid());
+        var underbotCharacter = new Tykoon.UnderbotCharacter(this, 1);
         underbotCharacter.obj.position.set(0, 0, 100);
         this.addCharacter(underbotCharacter);
         this.scene.add(underbotCharacter.obj);
@@ -258,6 +260,8 @@
 
         this.addEventListener("ui.clickOnCharacter", function (ev) {
             this.selectedCharacter = ev.character;
+            var sounds = Tykoon.sounds[ev.character.id];
+            sounds[Math.floor(Math.random() * sounds.length)].play(); // random response
         });
 
         this.addEventListener("ui.clickOnSite", function (ev) {
