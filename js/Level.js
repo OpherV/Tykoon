@@ -65,7 +65,7 @@
 
 
         this.cameras = [];
-        this.orbitCamera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 100, this.dimensions * 5);
+        this.orbitCamera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 5, this.dimensions * 5);
         this.orbitCamera.position.set(-1000, 500, -1000);
         this.cameras.push(this.orbitCamera);
         //this.cameras.push(new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 0.1, 5000 ));
@@ -196,6 +196,12 @@
         underbotCharacter.obj.position.set(0, 0, 100);
         this.addCharacter(underbotCharacter);
         this.scene.add(underbotCharacter.obj);
+
+
+        var catCharacter = new Tykoon.CatCharacter(this, Tykoon.Utils.generateGuid());
+        catCharacter.obj.position.set(200, 0, 0);
+        this.addCharacter(catCharacter);
+        this.scene.add(catCharacter.obj);
 
         ////newCreature1.target=newCreature2.obj.position;
         ////newCreature2.target=newCreature1.obj.position;

@@ -40,9 +40,11 @@ Tykoon.Game.prototype.loadObjects=function(callback){
         ['texture','tykoonUV','assets/uv/tykoonUV.jpg'],
         ['texture','islandUV','assets/uv/islandUV.jpg'],
         ['texture','underbotUV','assets/uv/HankUnderbot_TEx.jpg'],
+        ['texture','catUV','assets/uv/cat_texLuminance.jpg'],
         ['obj','islandModel','assets/models/island.obj'],
         ['obj','underbotModel','assets/models/hank_NoAnim.obj'],
-        ['obj','volcanoModel','assets/models/volcano.obj']
+        ['obj','volcanoModel','assets/models/volcano.obj'],
+        ['obj','catModel','assets/models/cat.obj']
     ];
 
     var manager = new THREE.LoadingManager();
