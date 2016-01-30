@@ -20,7 +20,7 @@
         var creatureObj = this.creatureObj =  this.level.game.assetCache["underbotModel"].clone();
         creatureObj.scale.set(0.2,0.2,0.2);
         creatureObj.rotation.y = -Math.PI/2;
-        creatureObj.position.y = 73;
+        creatureObj.position.y = 67;
 
         var material = new THREE.MeshPhongMaterial( {
             map: this.level.game.assetCache["underbotUV"]
