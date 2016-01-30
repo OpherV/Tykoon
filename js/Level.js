@@ -37,7 +37,7 @@
 
         var that = this;
         var urlVars=Tykoon.Utils.getUrlVars();
-        this.postProcessingEnabled = true;
+        this.postProcessingEnabled = false && true;
         this.dimensions = 25000;
         this.positionGridSize = 1000;
 

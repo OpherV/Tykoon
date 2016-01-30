@@ -10,6 +10,8 @@
 
         this.mode = Tykoon.UiController.MODES.IDLE;
         this.isPanning = {};
+
+        this.characterMenu = document.querySelector("#characterMenu");
     };
 
     //TODO carryover bug?
@@ -108,6 +110,8 @@
             that.keysDown[event.keyCode] = false;
         });
         document.addEventListener('mousedown', function (ev) {
+            that.mousePosAbs.x=event.clientX;
+            that.mousePosAbs.y=event.clientY;
             that.mousePosRel.down = true;
             //var terrainPos=that.level.terrain.getPosition(that.terrainPoint.x,that.terrainPoint.z);
             //var xDot=terrainPos.normal.dot(new THREE.Vector3(1,0,0));
@@ -123,12 +127,19 @@
                         type: "ui.clickOnCharacter",
                         character: that.characterOnHover
                     });
+                    that.characterMenu.classList.add("active");
+                    that.characterMenu.style.left=that.mousePosAbs.x;
+                    that.characterMenu.style.top=that.mousePosAbs.y;
                 }
                 else if (that.terrainPoint) {
                     level.dispatchEvent({
                         type: "ui.clickOnTerrain",
                         terrainPoint: that.terrainPoint
                     });
+                }
+                else{
+                    that.characterMenu.classList.remove("active");
+
                 }
             }
         });
