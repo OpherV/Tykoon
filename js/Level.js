@@ -200,7 +200,7 @@
         this.scene.add(underbotCharacter.obj);
 
 
-        var catCharacter = new Tykoon.CatCharacter(this, Tykoon.Utils.generateGuid());
+        var catCharacter = new Tykoon.CatCharacter(this, 2);
         catCharacter.obj.position.set(200, 0, 0);
         this.addCharacter(catCharacter);
         this.scene.add(catCharacter.obj);
@@ -212,6 +212,31 @@
 
         //this.cameraObjectTracker.add(this.currentCamera);
 
+
+        var totem =  this.game.assetCache["totemModel"].clone();
+
+        var totemMaterial = new THREE.MeshPhongMaterial( {
+            map: this.game.assetCache['totemUV']
+        } );
+
+        totem.traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {
+                var geometry = child.geometry;
+
+                geometry.computeFaceNormals();
+                geometry.computeVertexNormals();
+                child.material = totemMaterial;
+                child.castShadow = true;
+            }
+        } );
+
+        totem.scale.set(0.1, 0.1, 0.1);
+        totem.position.set(-380, 30, -380);
+        totem.rotation.y = 0.3;
+
+        this.scene.add(totem);
+
+        this.sites = [totem];
 
         var volcano =  this.game.assetCache["volcanoModel"].clone();
 
@@ -236,7 +261,7 @@
 
         this.scene.add(volcano);
 
-        this.sites = [volcano];
+        this.sites.push(volcano);
 
     };
 
