@@ -122,25 +122,34 @@
             //    -2000,
             //    terrainPos.triangleCenter.z,null,true);
             if (ev.which == 1) {
-                if (that.characterOnHover){
+                //check for site intersection
+                var intersects = that.raycaster.intersectObjects(level.sites, true);
+                if (intersects.length > 0) {
+                    var obj = intersects[0].object;
                     level.dispatchEvent({
-                        type: "ui.clickOnCharacter",
-                        character: that.characterOnHover
-                    });
-                    that.characterMenu.classList.add("active");
-                    that.characterMenu.style.left=that.mousePosAbs.x;
-                    that.characterMenu.style.top=that.mousePosAbs.y;
-                }
-                else if (that.terrainPoint) {
-                    level.dispatchEvent({
-                        type: "ui.clickOnTerrain",
-                        terrainPoint: that.terrainPoint
+                        type: "ui.clickOnSite",
+                        site: obj
                     });
                 }
-                else{
+                else {
                     that.characterMenu.classList.remove("active");
 
+                    if (that.characterOnHover) {
+                        level.dispatchEvent({
+                            type: "ui.clickOnCharacter",
+                            character: that.characterOnHover
+                        });
+                    }
+                    else if (that.terrainPoint) {
+                        level.dispatchEvent({
+                            type: "ui.clickOnTerrain",
+                            terrainPoint: that.terrainPoint
+                        });
+                    }
                 }
+
+
+
             }
         });
 
@@ -212,6 +221,12 @@
 
         });
 
+    };
+
+    UiController.prototype.showActioMenu = function(){
+        this.characterMenu.style.left=this.mousePosAbs.x;
+        this.characterMenu.style.top=this.mousePosAbs.y;
+        this.characterMenu.classList.add("active");
     };
 
 

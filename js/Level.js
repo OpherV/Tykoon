@@ -234,6 +234,8 @@
 
         this.scene.add(volcano);
 
+        this.sites = [volcano];
+
     };
 
     Level.prototype.setupEvents = function(){
@@ -256,6 +258,10 @@
 
         this.addEventListener("ui.clickOnCharacter", function (ev) {
             this.selectedCharacter = ev.character;
+        });
+
+        this.addEventListener("ui.clickOnSite", function (ev) {
+            this.uiController.showActioMenu();
         });
 
 
