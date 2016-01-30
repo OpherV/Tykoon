@@ -2,12 +2,12 @@
 (function() {
 
 
-    var Character = function (level, id, dna) {
+    var Character = function (level, id) {
         this.id = id;
         this.level = level;
         this.animations = {};
 
-        Character.prototype.init.call(this, dna);
+        Character.prototype.init.call(this);
     };
     Tykoon.Character = Character;
     Character.prototype.constructor = Character;

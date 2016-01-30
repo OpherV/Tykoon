@@ -174,7 +174,7 @@
 
     Level.prototype.setupCharacters = function () {
 
-        var newCharacter = this.selectedCharacter = new Tykoon.Character(this, Tykoon.Utils.generateGuid());
+        var newCharacter = this.selectedCharacter = new Tykoon.TykoonCharacter(this, Tykoon.Utils.generateGuid());
         newCharacter.obj.position.set(0, 0, 0);
         this.addCharacter(newCharacter);
         this.scene.add(newCharacter.obj);
