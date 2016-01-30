@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "three.js": "threejs#*",
-    "jquery": "~2.2.0"
+    "jquery": "~2.2.0",
+    "howler.js": "howler#~1.1.29"
   }
 }

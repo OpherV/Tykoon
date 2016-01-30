@@ -9,6 +9,32 @@
 
 
     Level.prototype.init = function () {
+        // set up the sphere vars
+        var radius = 45,
+            segments = 16,
+            rings = 16;
+
+        var sphereMaterial =
+            new THREE.MeshLambertMaterial(
+            {
+                color: 0xCC0000
+            });
+
+        // create a new mesh with
+        // sphere geometry - we will cover
+        // the sphereMaterial next!
+        var sphere = new THREE.Mesh(
+
+            new THREE.SphereGeometry(
+                radius,
+                segments,
+                rings),
+
+            sphereMaterial);
+
+        sphere.visible = false;
+        this.targetLocationIndicator = sphere;
+
         var that = this;
         var urlVars=Tykoon.Utils.getUrlVars();
         this.postProcessingEnabled = !urlVars.postprocessing=="false";
@@ -68,6 +94,7 @@
         hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.set(0, 1, 0);
         this.scene.add(hemiLight);
+        this.scene.add(sphere);
 
         var dirLight = this.dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
         dirLight.color.setHSL(0.1, 1, 0.95);
@@ -178,6 +205,13 @@
 
         this.addEventListener("ui.clickOnTerrain", function (ev) {
             this.selectedCharacter.target = ev.terrainPoint;
+            // add click indication
+            this.targetLocationIndicator.position.x = ev.terrainPoint.x;
+            this.targetLocationIndicator.position.z = ev.terrainPoint.z;
+            this.targetLocationIndicator.visible = true;
+            setTimeout(function() {
+                this.targetLocationIndicator.visible = false;
+            }.bind(this), 2000);
             this.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
             this.selectedCharacter.behavior = Tykoon.Character.BEHAVIORS.gototarget;
         });
