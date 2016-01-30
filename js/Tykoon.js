@@ -43,6 +43,8 @@ Tykoon.Game.prototype.loadObjects=function(callback){
         ['texture','catUV','assets/uv/cat_texLuminance.jpg'],
         ['texture','totemUV','assets/uv/totem_Tex.jpg'],
         ['texture','treeUV','assets/uv/tree_Tex.jpg'],
+        ['texture', 'volcanoUV', 'assets/uv/volcano_Tex.jpg'],
+        ['texture', 'waterUV', 'assets/uv/yneg.jpg'],
         ['obj','islandModel','assets/models/island.obj'],
         ['obj','underbotModel','assets/models/hank_NoAnim.obj'],
         ['obj','volcanoModel','assets/models/volcano.obj'],

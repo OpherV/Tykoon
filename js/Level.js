@@ -175,6 +175,23 @@
 
         this.uiController = new Tykoon.UiController(this);
 
+        var texture, waterMaterial, water;
+
+
+        waterMaterial = new THREE.MeshLambertMaterial({ map : this.game.assetCache['waterUV'] });
+        water = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), waterMaterial);
+        // water.waterMaterial.side = THREE.DoubleSide;
+        water.position.y = -800;
+        water.scale.set(10,10,10);
+
+        // rotation.z is rotation around the z-axis, measured in radians (rather than degrees)
+        // Math.PI = 180 degrees, Math.PI / 2 = 90 degrees, etc.
+        water.rotation.x = -Math.PI / 2;
+
+        this.scene.add(water);
+
+
+
         this.setupCharacters();
         this.setupEvents();
 
@@ -253,7 +270,7 @@
         );
 
         var volcanoMaterial = new THREE.MeshPhongMaterial( {
-            color: 0x612704
+            map: this.game.assetCache['volcanoUV']
         } );
 
         volcano.traverse( function ( child ) {
@@ -274,6 +291,32 @@
         this.scene.add(volcano);
 
         this.sites.push(volcano);
+
+        var tree =  this.game.assetCache["treeModel"].clone();
+
+        var treeMaterial = new THREE.MeshPhongMaterial( {
+            map: this.game.assetCache['treeUV']
+        } );
+
+        tree.traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {
+                var geometry = child.geometry;
+
+                geometry.computeFaceNormals();
+                geometry.computeVertexNormals();
+                child.material = treeMaterial;
+                child.castShadow = true;
+            }
+        } );
+
+        tree.scale.set(0.3, 0.3, 0.3);
+        tree.position.set(380, 80, -380);
+        tree.rotation.y = 0.3;
+
+        this.scene.add(tree);
+
+        this.sites.push(tree);
+
 
     };
 
