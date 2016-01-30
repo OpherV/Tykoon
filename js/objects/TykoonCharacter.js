@@ -11,7 +11,7 @@
     };
 
     TykoonCharacter.prototype = Object.create(Tykoon.Character.prototype);
-    TykoonCharacter.TykoonCharacter.prototype.constructor = TykoonCharacter;
+    TykoonCharacter.prototype.constructor = TykoonCharacter;
 
     TykoonCharacter.prototype.renderBody = function () {
         var that = this;
@@ -40,7 +40,7 @@
 
 
         creatureObj.position.y+=40;
-        //creatureObj.castShadow = true;
+        creatureObj.castShadow = true;
         //geometry.computeFaceNormals();
         that.obj.add(creatureObj);
     };

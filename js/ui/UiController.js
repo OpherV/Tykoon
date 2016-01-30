@@ -121,7 +121,7 @@
                 if (that.characterOnHover){
                     level.dispatchEvent({
                         type: "ui.clickOnCharacter",
-                        terrainPoint: that.characterOnHover
+                        character: that.characterOnHover
                     });
                 }
                 else if (that.terrainPoint) {

@@ -40,7 +40,7 @@
 
         this.cameras = [];
         this.orbitCamera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 100, this.dimensions * 5);
-        this.orbitCamera.position.set(2600, 3000, 2600);
+        this.orbitCamera.position.set(1000, 900, 1000);
         this.cameras.push(this.orbitCamera);
         //this.cameras.push(new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 0.1, 5000 ));
         var topCamera = new THREE.OrthographicCamera(this.dimensions * window.innerWidth / window.innerHeight / -2,
@@ -69,21 +69,21 @@
         hemiLight.position.set(0, 1, 0);
         this.scene.add(hemiLight);
 
-        //var dirLight = this.dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-        //dirLight.color.setHSL(0.1, 1, 0.95);
-        //dirLight.position.set(-10000, 4000, 10000);
-        //dirLight.target = new THREE.Object3D(0, 0, 0);
-        //dirLight.castShadow = true;
-        ////dirLight.shadowCameraVisible=true;
-        //dirLight.shadowCameraLeft = -this.dimensions / 2;
-        //dirLight.shadowCameraRight = this.dimensions / 2;
-        //dirLight.shadowCameraTop = this.dimensions / 2;
-        //dirLight.shadowCameraBottom = -this.dimensions / 2;
-        //dirLight.shadowCameraNear = -this.dimensions / 2;
-        //dirLight.shadowCameraFar = this.dimensions;
-        //dirLight.shadowMapWidth = dirLight.shadowMapHeight = 2048;
-        //dirLight.castShadow = true;
-        //this.scene.add(dirLight);
+        var dirLight = this.dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        dirLight.color.setHSL(0.1, 1, 0.95);
+        dirLight.position.set(5000, 4000, -5000);
+        dirLight.target = new THREE.Object3D(0, 0, 0);
+        dirLight.castShadow = true;
+        //dirLight.shadowCameraVisible=true;
+        dirLight.shadowCameraLeft = -this.dimensions / 2;
+        dirLight.shadowCameraRight = this.dimensions / 2;
+        dirLight.shadowCameraTop = this.dimensions / 2;
+        dirLight.shadowCameraBottom = -this.dimensions / 2;
+        dirLight.shadowCameraNear = -this.dimensions / 2;
+        dirLight.shadowCameraFar = this.dimensions;
+        dirLight.shadowMapWidth = dirLight.shadowMapHeight = 2048;
+        dirLight.castShadow = true;
+        this.scene.add(dirLight);
 
 
 
@@ -96,7 +96,6 @@
         //this.scene.add(plane);
 
         var island = this.island = this.game.assetCache["islandModel"].clone();
-
         var material = new THREE.MeshPhongMaterial( {
             map: this.game.assetCache["islandUV"]
             } );
@@ -106,6 +105,7 @@
             if ( child instanceof THREE.Mesh ) {
                 var geometry = child.geometry;
 
+                child.receiveShadow = true;
                 geometry.computeFaceNormals();
                 geometry.computeVertexNormals();
                 child.material = material;
@@ -113,11 +113,6 @@
             }
         } );
 
-
-        var pointLight11 = new THREE.PointLight(0xffffff);
-        pointLight11.position.set(0, 300, 200);
-
-        this.scene.add(pointLight11);
 
 
         var hex  = 0xff0000;
@@ -174,10 +169,16 @@
 
     Level.prototype.setupCharacters = function () {
 
-        var newCharacter = this.selectedCharacter = new Tykoon.TykoonCharacter(this, Tykoon.Utils.generateGuid());
-        newCharacter.obj.position.set(0, 0, 0);
-        this.addCharacter(newCharacter);
-        this.scene.add(newCharacter.obj);
+        var tykoonCharacter = new Tykoon.TykoonCharacter(this, Tykoon.Utils.generateGuid());
+        tykoonCharacter.obj.position.set(0, 0, 0);
+        this.addCharacter(tykoonCharacter);
+        this.scene.add(tykoonCharacter.obj);
+
+
+        var underbotCharacter = new Tykoon.UnderbotCharacter(this, Tykoon.Utils.generateGuid());
+        underbotCharacter.obj.position.set(0, 0, 100);
+        this.addCharacter(underbotCharacter);
+        this.scene.add(underbotCharacter.obj);
 
         ////newCreature1.target=newCreature2.obj.position;
         ////newCreature2.target=newCreature1.obj.position;
@@ -196,6 +197,12 @@
             this.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
             this.selectedCharacter.behavior = Tykoon.Character.BEHAVIORS.gototarget;
         });
+
+        this.addEventListener("ui.clickOnCharacter", function (ev) {
+            this.selectedCharacter = ev.character;
+        });
+
+
     };
 
 
@@ -228,11 +235,11 @@
 
         this.runProximityTests();
 
-        var timer = 0.0001 * Date.now();
-
-        this.particleLight.position.x = Math.sin( timer * 7 ) * 700;
-        this.particleLight.position.y = Math.cos( timer * 5 ) * 800;
-        this.particleLight.position.z = Math.cos( timer * 3 ) * 900;
+        //var timer = 0.0001 * Date.now();
+        //
+        //this.particleLight.position.x = Math.sin( timer * 7 ) * 700;
+        //this.particleLight.position.y = Math.cos( timer * 5 ) * 800;
+        //this.particleLight.position.z = Math.cos( timer * 3 ) * 900;
 
         this.dispatchEvent({type: "render"});
 

@@ -39,7 +39,9 @@ Tykoon.Game.prototype.loadObjects=function(callback){
         ['json','tykoonCharacter','assets/models/tykoonCharacter.json'],
         ['texture','tykoonUV','assets/uv/tykoonUV.jpg'],
         ['texture','islandUV','assets/uv/islandUV.jpg'],
-        ['obj','islandModel','assets/models/island.obj']
+        ['texture','underbotUV','assets/uv/HankUnderbot_TEx.jpg'],
+        ['obj','islandModel','assets/models/island.obj'],
+        ['obj','underbotModel','assets/models/hank_NoAnim.obj']
     ];
 
     var manager = new THREE.LoadingManager();
