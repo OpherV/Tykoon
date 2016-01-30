@@ -292,6 +292,10 @@
                 }.bind(this), 2000);
                 this.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
                 this.selectedCharacter.behavior = Tykoon.Character.BEHAVIORS.gototarget;
+
+                //todo ugly
+                var sounds = Tykoon.sounds[this.selectedCharacter.id];
+                sounds[Math.floor(Math.random() * sounds.length)].play(); // random response
             }
         });
 
