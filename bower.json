@@ -19,6 +19,8 @@
   "dependencies": {
     "three.js": "threejs#*",
     "jquery": "~2.2.0",
-    "howler.js": "howler#~1.1.29"
+    "howler.js": "howler#~1.1.29",
+    "ShaderParticleEngine": "~0.8.5",
+    "gsap": "~1.18.2"
   }
 }

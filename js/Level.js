@@ -37,7 +37,7 @@
 
         var that = this;
         var urlVars=Tykoon.Utils.getUrlVars();
-        this.postProcessingEnabled = false && true;
+        this.postProcessingEnabled = true;
         this.dimensions = 25000;
         this.positionGridSize = 1000;
 
@@ -142,7 +142,6 @@
                 geometry.computeFaceNormals();
                 geometry.computeVertexNormals();
                 child.material = material;
-                console.log(material);
             }
         } );
 
@@ -239,6 +238,19 @@
         this.sites = [totem];
 
         var volcano =  this.game.assetCache["volcanoModel"].clone();
+
+        var pointLight = new THREE.PointLight( 0xff0000, 0.2);
+        pointLight.position.y = 500;
+        volcano.add( pointLight );
+
+        TweenMax.to(pointLight, 2,
+            {
+                intensity: 2,
+                ease: Power1.easeOut,
+                yoyo: true,
+                repeat: -1
+            }
+        );
 
         var volcanoMaterial = new THREE.MeshPhongMaterial( {
             color: 0x612704
