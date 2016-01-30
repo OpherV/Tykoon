@@ -32,6 +32,7 @@ soundManager.setup({
 
     // where to find the SWF files, if needed
     url: '/path/to/swf-directory/',
+	debugMode: false,
 
     onready: function() {
     	Tykoon.sounds = [];

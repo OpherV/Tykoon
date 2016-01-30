@@ -83,6 +83,19 @@
         //});
         //
 
+        document.querySelector(".option1").addEventListener("mousedown",action);
+        document.querySelector(".option2").addEventListener("mousedown",action);
+        document.querySelector(".option3").addEventListener("mousedown",action);
+
+        function action(e){
+
+            level.dispatchEvent({
+                type: "ui.selectCharacterOption"
+            });
+            that.characterMenu.classList.remove("active");
+            e.preventDefault();
+        }
+
         document.addEventListener('keydown', function (event) {
             that.keysDown[event.keyCode] = true;
 

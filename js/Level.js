@@ -323,6 +323,12 @@
     Level.prototype.setupEvents = function(){
         var that = this;
 
+        this.addEventListener("ui.selectCharacterOption", function (ev) {
+            that.selectedCharacter.target = that.currentSelectedSite.position;
+            that.selectedCharacter.steeringType = Tykoon.Steering.STEERINGTYPES.chase;
+            that.selectedCharacter.behavior = Tykoon.Character.BEHAVIORS.gototarget;
+        } );
+
         this.addEventListener("ui.clickOnTerrain", function (ev) {
             if (this.selectedCharacter) {
                 this.selectedCharacter.target = ev.terrainPoint;
@@ -349,7 +355,8 @@
         });
 
         this.addEventListener("ui.clickOnSite", function (ev) {
-            this.uiController.showActioMenu();
+            that.uiController.showActioMenu();
+            that.currentSelectedSite = ev.site;
         });
 
 
